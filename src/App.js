@@ -1,23 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React,{useState, useEffect} from "react";
+import "./App.css";
+import LandingPage from "./components/landingPage"
+import Navbar from "./components/navbar"
+import WithListLoading from "./components/repos/index"
+import List from "./components/repos/list"
 
 function App() {
+  const ListLoading = WithListLoading(List);
+  const [appState, setAppState] = useState({
+    loading:false,
+    repos:null,
+  })
+
+  useEffect(() => {
+    setAppState({ loading: true });
+    const user = `https://api.github.com/users/kingsconsult/repos`;
+    fetch(user)
+      .then((res) => res.json())
+      .then((repos) => {
+        setAppState({ loading: false, repos: repos });
+      });
+  }, [setAppState]);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+          {/* <h1>Hello kings</h1> */}
+          <Navbar/>
+        <LandingPage /> 
+        <LandingPage /> 
+        <ListLoading isLoading={appState.loading} repos={appState.repos} />
       </header>
     </div>
   );
